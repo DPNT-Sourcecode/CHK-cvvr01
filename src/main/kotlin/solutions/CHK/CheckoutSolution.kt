@@ -54,10 +54,11 @@ object CheckoutSolution {
             Item('B', 30, listOf(SpecialOffer(2, 45))),
             Item('C', 20),
             Item('D', 15),
+            Item('E', 40, listOf(SpecialOffer(2, 80))
         )
     }
 }
 
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
-data class SpecialOffer(val quantity: Int, val price: Int)
+data class SpecialOffer(val quantity: Int, val price: Int, val freeSku: Char? = null)

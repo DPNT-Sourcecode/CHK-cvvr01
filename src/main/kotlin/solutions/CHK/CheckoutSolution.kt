@@ -7,14 +7,15 @@ object CheckoutSolution {
         if (containsInvalidSkus(skuList)) {
             return -1
         }
-        val upperCaseChar = toUpperCase(skuList)
+        // val upperCaseChars = toUpperCase(skuList)
 
-        val itemQuantities = getItemQuantities(skuList)
-
-        return skuList.sumOf { sku ->
-            val item = items.find { it.sku == sku[0] }
-            item?.price ?: return -1
-        }
+//        val itemQuantities = getItemQuantities(skuList)
+//
+//        return skuList.sumOf { sku ->
+//            val item = items.find { it.sku == sku[0] }
+//            item?.price ?: return -1
+//        }
+        return 42
     }
 
     private fun getItemQuantities(skuList: List<Char>): Map<Char, Int> {
@@ -23,9 +24,9 @@ object CheckoutSolution {
             .eachCount()
     }
 
-    private fun toUpperCase(skuList: List<String>): List<Char> {
-        return skuList.map { it.uppercase() }
-    }
+//    private fun toUpperCase(skuList: List<String>): List<Char> {
+//        return skuList.map { it.uppercase() }
+//    }
 
     private fun containsInvalidSkus(skuList: List<String>): Boolean {
         return skuList.any { it.none(Char::isLetter) }
@@ -44,6 +45,7 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int)
+
 
 
 

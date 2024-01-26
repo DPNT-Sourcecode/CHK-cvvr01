@@ -131,5 +131,11 @@ class CheckoutTest {
     @Test
     fun `buy one item each`() {
         assertEquals(837, CheckoutSolution.checkout("ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
+        assertEquals(837, CheckoutSolution.checkout("ZYXWVUTSRQPONMLKJIHGFEDCBA"))
+    }
+
+    @Test
+    fun `use one bundle`() {
+        assertEquals(45, CheckoutSolution.checkout("STX"))
     }
 }

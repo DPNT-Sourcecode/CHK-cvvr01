@@ -55,17 +55,21 @@ object CheckoutSolution {
         var totalBundlePrice = 0
 
         while (canFormBundle(checkoutItemsMap, bundleOffer.skus, bundleOffer.quantity)) {
-            val mostExpensiveItem = findMostExpensiveItem(checkoutItemsMap, items, bundleOffer.skus)
+            val sortedEligibleItems = items.filter { it.sku in bundleOffer.skus && checkoutItemsMap.getOrDefault(it.sku, 0) > 0 }
+                .sortedByDescending { it.price }
 
-            mostExpensiveItem?.let { sku ->
-                val quantityToRemove = minOf(checkoutItemsMap[sku]!!, bundleOffer.quantity)
-                checkoutItemsMap[sku] = checkoutItemsMap[sku]!! - quantityToRemove
-
-                if (checkoutItemsMap[sku]!! <= 0) {
-                    checkoutItemsMap.remove(sku)
+            val selectedItems = selectItemsForBundle(checkoutItemsMap, sortedEligibleItems, bundleOffer.quantity)
+            if (selectedItems.isNotEmpty()) {
+                selectedItems.forEach { sku ->
+                    checkoutItemsMap[sku] = checkoutItemsMap[sku]!! - 1
+                    if (checkoutItemsMap[sku]!! <= 0) {
+                        checkoutItemsMap.remove(sku)
+                    }
                 }
 
                 totalBundlePrice += bundleOffer.price
+            } else {
+                break
             }
         }
 
@@ -76,10 +80,20 @@ object CheckoutSolution {
         return checkoutItemsMap.filterKeys { it in skus }.values.sum() >= bundleQuantity
     }
 
-    private fun findMostExpensiveItem(checkoutItemsMap: Map<Char, Int>, items: List<Item>, bundleSkus: List<Char>): Char? {
-        return items.filter { it.sku in bundleSkus && it.sku in checkoutItemsMap.keys }
-            .maxByOrNull { it.price }
-            ?.sku
+    private fun selectItemsForBundle(checkoutItemsMap: Map<Char, Int>, sortedItems: List<Item>, bundleQuantity: Int): List<Char> {
+        val selectedItems = mutableListOf<Char>()
+        var count = 0
+
+        for (item in sortedItems) {
+            val availableQuantity = checkoutItemsMap.getOrDefault(item.sku, 0)
+            val quantityToAdd = minOf(availableQuantity, bundleQuantity - count)
+            repeat(quantityToAdd) { selectedItems.add(item.sku) }
+            count += quantityToAdd
+
+            if (count >= bundleQuantity) break
+        }
+
+        return if (count >= bundleQuantity) selectedItems else listOf()
     }
 
     private fun removeFreeItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Map<Char, Int> {

@@ -43,38 +43,33 @@ object CheckoutSolution {
     }
 
     private fun removeFreeItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Map<Char, Int> {
-        return checkoutItemsMap.mapValues { (sku, quantity) ->
-            val item = items.find { it.sku == sku }
-            if (item == null) {
-                return emptyMap()
-            } else {
-                val sortedSpecialOffers = item.specialOffers.sortedByDescending { it.quantity }
+        val updatedCheckoutItemsMap = checkoutItemsMap.toMutableMap()
 
-                var remainingQuantity = quantity
+        checkoutItemsMap.forEach { (sku, quantity) ->
+            val item = items.find { it.sku == sku }
+
+            item?.let {
+                val sortedSpecialOffers = it.specialOffers.sortedByDescending { offer -> offer.quantity }
 
                 for (specialOffer in sortedSpecialOffers) {
-                    while (remainingQuantity >= specialOffer.quantity) {
-                        if (specialOffer.freeSku != null) {
-                            val freeItem = items.find { it.sku == specialOffer.freeSku }
-                            if (freeItem != null) {
-                                remainingQuantity -= specialOffer.quantity
-                                if (checkoutItemsMap.containsKey(freeItem.sku)) {
-                                    remainingQuantity -= 1
-                                }
-                            }
+                    var applicableTimes = quantity / specialOffer.quantity
+
+                    while (applicableTimes > 0 && specialOffer.freeSku != null) {
+                        val freeItemQuantity = updatedCheckoutItemsMap[specialOffer.freeSku]
+                        if (freeItemQuantity != null && freeItemQuantity > 0) {
+                            updatedCheckoutItemsMap[specialOffer.freeSku] = freeItemQuantity - 1
+                            applicableTimes--
                         } else {
                             break
                         }
                     }
                 }
-                if (remainingQuantity <= 0) {
-                    return emptyMap()
-                }
-
-                remainingQuantity
             }
         }
+
+        return updatedCheckoutItemsMap.filter { it.value > 0 }
     }
+
 
     private fun getCheckoutItemsMap(skuList: List<String>): Map<Char, Int> {
         return skuList
@@ -101,4 +96,5 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int? = null, val freeSku: Char? = null)
+
 

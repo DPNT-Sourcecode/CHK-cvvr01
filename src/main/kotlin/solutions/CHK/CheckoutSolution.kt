@@ -13,7 +13,8 @@ object CheckoutSolution {
     }
 
     private fun getSumOfItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Int {
-        return checkoutItemsMap.entries.sumOf { (sku, quantity) ->
+        val remainingCheckoutItemsMap = removeFreeItems(checkoutItemsMap, items)
+        return remainingCheckoutItemsMap.entries.sumOf { (sku, quantity) ->
             val item = items.find { it.sku == sku }
             if (item == null) {
                 return -1
@@ -25,16 +26,7 @@ object CheckoutSolution {
 
                 for (specialOffer in sortedSpecialOffers) {
                     while (remainingQuantity >= specialOffer.quantity) {
-                        if (specialOffer.freeSku != null) {
-                            val freeItem = items.find { it.sku == specialOffer.freeSku }
-                            if (freeItem != null) {
-                                remainingQuantity -= specialOffer.quantity
-                                totalCost += specialOffer.quantity * item.price
-                                if (checkoutItemsMap.containsKey(freeItem.sku)) {
-                                    totalCost -= freeItem.price
-                                }
-                            }
-                        } else if (specialOffer.price != null) {
+                        if (specialOffer.price != null) {
                             remainingQuantity -= specialOffer.quantity
                             totalCost += specialOffer.price
                         } else {
@@ -46,6 +38,35 @@ object CheckoutSolution {
                 totalCost += remainingQuantity * item.price
 
                 totalCost
+            }
+        }
+    }
+
+    private fun removeFreeItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Map<Char, Int> {
+        return checkoutItemsMap.mapValues { (sku, quantity) ->
+            val item = items.find { it.sku == sku }
+            if (item == null) {
+                return emptyMap()
+            } else {
+                val sortedSpecialOffers = item.specialOffers.sortedByDescending { it.quantity }
+
+                var remainingQuantity = quantity
+
+                for (specialOffer in sortedSpecialOffers) {
+                    while (remainingQuantity >= specialOffer.quantity) {
+                        if (specialOffer.freeSku != null) {
+                            val freeItem = items.find { it.sku == specialOffer.freeSku }
+                            if (freeItem != null) {
+                                remainingQuantity -= specialOffer.quantity
+                                if (checkoutItemsMap.containsKey(freeItem.sku)) {
+                                    remainingQuantity -= 1
+                                }
+                            }
+                        }
+                    }
+                }
+
+                remainingQuantity
             }
         }
     }

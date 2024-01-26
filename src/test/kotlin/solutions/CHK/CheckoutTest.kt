@@ -54,4 +54,11 @@ class CheckoutTest {
     fun `revers order of SKUs still return expected price`() {
         assertEquals(115, CheckoutSolution.checkout("DCBA"))
     }
+
+    @Test
+    fun `multiple special offer price items still return expected price`() {
+        assertEquals(180, CheckoutSolution.checkout("AAAA"))
+        assertEquals(230, CheckoutSolution.checkout("AAAAA"))
+        assertEquals(260, CheckoutSolution.checkout("AAAAAA"))
+    }
 }

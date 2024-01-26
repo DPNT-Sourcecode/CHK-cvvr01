@@ -105,4 +105,20 @@ class CheckoutTest {
     fun `multiple free item special offers are combined with multiple special offers`() {
         assertEquals(335, CheckoutSolution.checkout("EEEEBBAAABB"))
     }
+
+    @Test
+    fun `buy two get 3 offer`() {
+        assertEquals(10, CheckoutSolution.checkout("F"))
+        assertEquals(20, CheckoutSolution.checkout("FF"))
+        assertEquals(20, CheckoutSolution.checkout("FFF"))
+        assertEquals(30, CheckoutSolution.checkout("FFFF"))
+        assertEquals(40, CheckoutSolution.checkout("FFFFF"))
+        assertEquals(40, CheckoutSolution.checkout("FFFFFF"))
+        assertEquals(50, CheckoutSolution.checkout("FFFFFFF"))
+    }
+
+    @Test
+    fun `buy two get 3 offer mixed with other special offers`() {
+        assertEquals(195, CheckoutSolution.checkout("FFFAAABB"))
+    }
 }

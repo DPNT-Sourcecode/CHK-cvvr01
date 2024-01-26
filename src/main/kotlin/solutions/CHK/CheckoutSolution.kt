@@ -91,6 +91,7 @@ object CheckoutSolution {
             Item('C', 20),
             Item('D', 15),
             Item('E', 40, listOf(SpecialOffer(2, freeSku = 'B'))),
+            Item('F', 10, listOf(SpecialOffer(3, freeSku = 'F'))),
         )
     }
 }

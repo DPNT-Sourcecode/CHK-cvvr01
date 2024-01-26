@@ -14,7 +14,9 @@ object CheckoutSolution {
 
     private fun getSumOfItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Int {
         val remainingCheckoutItemsMap = removeFreeItems(checkoutItemsMap, items).toMutableMap()
-        val totalBundlePrice = setupBundleOffers().sumOf { applyBundleOffers(remainingCheckoutItemsMap, it) }
+        val totalBundlePrice = setupBundleOffers().sumOf {
+            applyMostExpensiveBundle(remainingCheckoutItemsMap, items, it)
+        }
 
         val remainingItemsSum = remainingCheckoutItemsMap.entries.sumOf { (sku, quantity) ->
             calculateItemCost(sku, quantity, items) ?: return -1
@@ -49,44 +51,37 @@ object CheckoutSolution {
         return totalCost
     }
 
-    private fun applyBundleOffers(checkoutItemsMap: MutableMap<Char, Int>, bundleOffer: BundleOffer): Int {
+    private fun applyMostExpensiveBundle(checkoutItemsMap: MutableMap<Char, Int>, items: List<Item>, bundleOffer: BundleOffer): Int {
         var totalBundlePrice = 0
-        var canApplyBundle = true
 
-        while (canApplyBundle) {
-            var itemsInBundle = 0
+        while (canFormBundle(checkoutItemsMap, bundleOffer.quantity)) {
+            val mostExpensiveItems = findMostExpensiveItems(checkoutItemsMap, items, bundleOffer.quantity)
 
-            // Count how many items from the bundle are in the map
-            bundleOffer.skus.forEach { sku ->
-                itemsInBundle += checkoutItemsMap.getOrDefault(sku, 0)
-            }
-
-            // Check if there are enough items for a bundle
-            if (itemsInBundle >= bundleOffer.quantity) {
-                var remainingToRemove = bundleOffer.quantity
-
-                // Remove items for the bundle
-                bundleOffer.skus.forEach { sku ->
-                    val quantity = checkoutItemsMap.getOrDefault(sku, 0)
-                    if (quantity > 0 && remainingToRemove > 0) {
-                        val removeCount = minOf(quantity, remainingToRemove)
-                        remainingToRemove -= removeCount
-
-                        if (quantity - removeCount <= 0) {
-                            checkoutItemsMap.remove(sku)
-                        } else {
-                            checkoutItemsMap[sku] = quantity - removeCount
-                        }
+            mostExpensiveItems.forEach { sku ->
+                val currentCount = checkoutItemsMap[sku] ?: 0
+                if (currentCount > 0) {
+                    checkoutItemsMap[sku] = currentCount - 1
+                    if (checkoutItemsMap[sku] == 0) {
+                        checkoutItemsMap.remove(sku)
                     }
                 }
-
-                totalBundlePrice += bundleOffer.price
-            } else {
-                canApplyBundle = false
             }
+
+            totalBundlePrice += bundleOffer.price
         }
 
         return totalBundlePrice
+    }
+
+    private fun canFormBundle(checkoutItemsMap: Map<Char, Int>, bundleQuantity: Int): Boolean {
+        return checkoutItemsMap.values.sum() >= bundleQuantity
+    }
+
+    private fun findMostExpensiveItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>, count: Int): List<Char> {
+        return items.filter { it.sku in checkoutItemsMap.keys }
+            .sortedByDescending { it.price }
+            .take(count)
+            .map { it.sku }
     }
 
     private fun removeFreeItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Map<Char, Int> {
@@ -161,7 +156,6 @@ object CheckoutSolution {
             Item('X', 17),
             Item('Y', 20),
             Item('Z', 21),
-
         )
     }
 
@@ -170,7 +164,7 @@ object CheckoutSolution {
             BundleOffer(
                 3,
                 45,
-                listOf('S', 'T', 'X', 'Y', 'Z')
+                listOf('S', 'T', 'X', 'Y', 'Z'),
             ),
         )
     }
@@ -180,7 +174,6 @@ data class Item(
     val sku: Char,
     val price: Int,
     val specialOffers: List<SpecialOffer> = emptyList(),
-    val bundleOffers: List<BundleOffer> = emptyList()
 )
 
 data class SpecialOffer(

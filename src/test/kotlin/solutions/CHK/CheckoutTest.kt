@@ -141,7 +141,7 @@ class CheckoutTest {
 
     @Test
     fun `use bundle with most expensive items`() {
-        // assertEquals(82, CheckoutSolution.checkout("STXYZ"))
+        assertEquals(82, CheckoutSolution.checkout("STXYZ"))
         assertEquals(79, CheckoutSolution.checkout("ZZZXX"))
     }
 }

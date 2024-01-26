@@ -72,6 +72,10 @@ object CheckoutSolution {
         return totalBundlePrice
     }
 
+    private fun canFormBundle(checkoutItemsMap: Map<Char, Int>, skus: List<Char>, bundleQuantity: Int): Boolean {
+        return checkoutItemsMap.filterKeys { it in skus }.values.sum() >= bundleQuantity
+    }
+
     private fun findMostExpensiveItem(checkoutItemsMap: Map<Char, Int>, items: List<Item>, bundleSkus: List<Char>): Char? {
         return items.filter { it.sku in bundleSkus && it.sku in checkoutItemsMap.keys }
             .maxByOrNull { it.price }
@@ -181,5 +185,3 @@ data class BundleOffer(
     val price: Int,
     val skus: List<Char> = emptyList(),
 )
-
-

@@ -100,4 +100,9 @@ class CheckoutTest {
         assertEquals(160, CheckoutSolution.checkout("EBEEE"))
         assertEquals(160, CheckoutSolution.checkout("BEEEE"))
     }
+
+    @Test
+    fun `multiple free item special offers are combined with multiple special offers`() {
+        assertEquals(495, CheckoutSolution.checkout("EEEEBBAAABB"))
+    }
 }

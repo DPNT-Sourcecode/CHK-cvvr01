@@ -3,11 +3,11 @@ package solutions.CHK
 object CheckoutSolution {
     fun checkout(skus: String): Int {
         val items = setupItems()
-        val skuList = skus.toList()
+        val skuList = skus.map { it.toString() }
         if (containsInvalidSkus(skuList)) {
             return -1
         }
-        skuList = toUpperCase(skuList)
+        val upperCaseChar = toUpperCase(skuList)
 
         val itemQuantities = getItemQuantities(skuList)
 
@@ -23,17 +23,12 @@ object CheckoutSolution {
             .eachCount()
     }
 
-    private fun toUpperCase(skuList: List<Char>): List<String> {
+    private fun toUpperCase(skuList: List<String>): List<Char> {
         return skuList.map { it.uppercase() }
     }
 
     private fun containsInvalidSkus(skuList: List<String>): Boolean {
-        skuList.forEach {
-            if (!it.matches(Regex("[A-Z]"))) {
-                return true
-            }
-        }
-        return false
+        return skuList.any { it.none(Char::isLetter) }
     }
 
     private fun setupItems(): List<Item> {
@@ -49,6 +44,7 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int)
+
 
 
 

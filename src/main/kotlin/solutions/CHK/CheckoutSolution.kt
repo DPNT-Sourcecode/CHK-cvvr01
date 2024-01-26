@@ -30,7 +30,9 @@ object CheckoutSolution {
                             if (freeItem != null) {
                                 remainingQuantity -= specialOffer.quantity
                                 totalCost += specialOffer.quantity * item.price
-                                totalCost -= freeItem.price
+                                if (checkoutItemsMap.containsKey(freeItem.sku)) {
+                                    totalCost -= freeItem.price
+                                }
                             }
                         } else if (specialOffer.price != null) {
                             remainingQuantity -= specialOffer.quantity

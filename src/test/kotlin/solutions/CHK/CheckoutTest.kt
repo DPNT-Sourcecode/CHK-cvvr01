@@ -82,4 +82,14 @@ class CheckoutTest {
     fun `free item special offer is not causing an error when no free item in checkout`() {
         assertEquals(80, CheckoutSolution.checkout("EE"))
     }
+
+    @Test
+    fun `multiple free item special offers are being used`() {
+        assertEquals(160, CheckoutSolution.checkout("EEEEBB"))
+    }
+
+    @Test
+    fun `multiple free item special offers are being used for all free items in checkout`() {
+        assertEquals(160, CheckoutSolution.checkout("EEEEB"))
+    }
 }

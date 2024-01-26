@@ -54,8 +54,8 @@ object CheckoutSolution {
     private fun applyMostExpensiveBundle(checkoutItemsMap: MutableMap<Char, Int>, items: List<Item>, bundleOffer: BundleOffer): Int {
         var totalBundlePrice = 0
 
-        while (canFormBundle(checkoutItemsMap, bundleOffer.quantity)) {
-            val mostExpensiveItems = findMostExpensiveItems(checkoutItemsMap, items, bundleOffer.quantity)
+        while (canFormBundle(checkoutItemsMap, bundleOffer.skus, bundleOffer.quantity)) {
+            val mostExpensiveItems = findMostExpensiveItems(checkoutItemsMap, items, bundleOffer.skus, bundleOffer.quantity)
 
             mostExpensiveItems.forEach { sku ->
                 val currentCount = checkoutItemsMap[sku] ?: 0
@@ -73,12 +73,12 @@ object CheckoutSolution {
         return totalBundlePrice
     }
 
-    private fun canFormBundle(checkoutItemsMap: Map<Char, Int>, bundleQuantity: Int): Boolean {
-        return checkoutItemsMap.values.sum() >= bundleQuantity
+    private fun canFormBundle(checkoutItemsMap: Map<Char, Int>, skus: List<Char>, bundleQuantity: Int): Boolean {
+        return checkoutItemsMap.filterKeys { it in skus }.values.sum() >= bundleQuantity
     }
 
-    private fun findMostExpensiveItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>, count: Int): List<Char> {
-        return items.filter { it.sku in checkoutItemsMap.keys }
+    private fun findMostExpensiveItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>, bundleSkus: List<Char>, count: Int): List<Char> {
+        return items.filter { it.sku in bundleSkus && it.sku in checkoutItemsMap.keys }
             .sortedByDescending { it.price }
             .take(count)
             .map { it.sku }
@@ -187,3 +187,4 @@ data class BundleOffer(
     val price: Int,
     val skus: List<Char> = emptyList(),
 )
+

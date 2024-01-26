@@ -7,7 +7,7 @@ object CheckoutSolution {
         if (containsInvalidSkus(skuList)) {
             return -1
         }
-        // val upperCaseChars = toUpperCase(skuList)
+        val upperCaseChars = toUpperCase(skuList)
 
 //        val itemQuantities = getItemQuantities(skuList)
 //
@@ -24,9 +24,9 @@ object CheckoutSolution {
             .eachCount()
     }
 
-//    private fun toUpperCase(skuList: List<String>): List<Char> {
-//        return skuList.map { it.uppercase() }
-//    }
+    private fun toUpperCase(skuList: List<String>): List<Char> {
+        return skuList.map { it.uppercase() }
+    }
 
     private fun containsInvalidSkus(skuList: List<String>): Boolean {
         return skuList.any { it.none(Char::isLetter) }

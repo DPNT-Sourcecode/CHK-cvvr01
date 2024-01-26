@@ -14,7 +14,6 @@ object CheckoutSolution {
 
     private fun getSumOfItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Int {
         val remainingCheckoutItemsMap = removeFreeItems(checkoutItemsMap, items)
-        removeBundleItems(checkoutItemsMap, items)
         return remainingCheckoutItemsMap.entries.sumOf { (sku, quantity) ->
             calculateItemCost(sku, quantity, items) ?: return -1
         }
@@ -46,16 +45,44 @@ object CheckoutSolution {
         return totalCost
     }
 
-    private fun removeBundleItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Map<Char, Int> {
-        val updatedCheckoutItemsMap = checkoutItemsMap.toMutableMap()
+    private fun applyBundleOffers(checkoutItemsMap: MutableMap<Char, Int>, bundleOffer: BundleOffer): Int {
+        var totalBundlePrice = 0
+        var canApplyBundle = true
 
-        checkoutItemsMap.forEach { (sku, quantity) ->
-            items.find { it.sku == sku }?.let { item ->
-                processItemForBundleOffers(updatedCheckoutItemsMap, item, quantity)
+        while (canApplyBundle) {
+            var itemsInBundle = 0
+
+            // Count how many items from the bundle are in the map
+            bundleOffer.skus.forEach { sku ->
+                itemsInBundle += checkoutItemsMap.getOrDefault(sku, 0)
+            }
+
+            // Check if there are enough items for a bundle
+            if (itemsInBundle >= bundleOffer.quantity) {
+                var remainingToRemove = bundleOffer.quantity
+
+                // Remove items for the bundle
+                bundleOffer.skus.forEach { sku ->
+                    val quantity = checkoutItemsMap.getOrDefault(sku, 0)
+                    if (quantity > 0 && remainingToRemove > 0) {
+                        val removeCount = minOf(quantity, remainingToRemove)
+                        remainingToRemove -= removeCount
+
+                        if (quantity - removeCount <= 0) {
+                            checkoutItemsMap.remove(sku)
+                        } else {
+                            checkoutItemsMap[sku] = quantity - removeCount
+                        }
+                    }
+                }
+
+                totalBundlePrice += bundleOffer.price
+            } else {
+                canApplyBundle = false
             }
         }
 
-        return updatedCheckoutItemsMap.filter { it.value > 0 }
+        return totalBundlePrice
     }
 
     private fun removeFreeItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Map<Char, Int> {
@@ -122,15 +149,24 @@ object CheckoutSolution {
             Item('P', 50, listOf(SpecialOffer(5, price = 200))),
             Item('Q', 30, listOf(SpecialOffer(3, price = 80))),
             Item('R', 50, listOf(SpecialOffer(3, freeSku = 'Q'))),
-            Item('S', 20, bundleOffers = listOf(BundleOffer(3, listOf('S', 'T', 'X', 'Y', 'Z')))),
-            Item('T', 20, bundleOffers = listOf(BundleOffer(3, listOf('S', 'T', 'X', 'Y', 'Z')))),
+            Item('S', 20),
+            Item('T', 20),
             Item('U', 40, listOf(SpecialOffer(4, freeSku = 'U'))),
             Item('V', 50, listOf(SpecialOffer(2, price = 90), SpecialOffer(3, price = 130))),
             Item('W', 20),
-            Item('X', 17, bundleOffers = listOf(BundleOffer(3, listOf('S', 'T', 'X', 'Y', 'Z')))),
-            Item('Y', 20, bundleOffers = listOf(BundleOffer(3, listOf('S', 'T', 'X', 'Y', 'Z')))),
-            Item('Z', 21, bundleOffers = listOf(BundleOffer(3, listOf('S', 'T', 'X', 'Y', 'Z')))),
+            Item('X', 17),
+            Item('Y', 20),
+            Item('Z', 21),
 
+        )
+    }
+
+    private fun setupBundleOffers(): List<BundleOffer> {
+        return listOf(
+            BundleOffer(
+                3,
+                listOf('S', 'T', 'X', 'Y', 'Z')
+            ),
         )
     }
 }
@@ -150,6 +186,7 @@ data class SpecialOffer(
 
 data class BundleOffer(
     val quantity: Int,
+    val price: Int,
     val skus: List<Char> = emptyList(),
 )
 

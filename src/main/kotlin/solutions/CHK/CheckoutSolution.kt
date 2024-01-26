@@ -9,7 +9,7 @@ object CheckoutSolution {
         }
         val upperCaseChars = toUpperCase(skuList)
 
-//        val itemQuantities = getItemQuantities(skuList)
+        val itemQuantities = getItemQuantities(upperCaseChars)
 //
 //        return skuList.sumOf { sku ->
 //            val item = items.find { it.sku == sku[0] }
@@ -25,7 +25,7 @@ object CheckoutSolution {
     }
 
     private fun toUpperCase(skuList: List<String>): List<Char> {
-        return skuList.map { it.uppercase() }
+        return skuList.flatMap { it.uppercase().toList() }
     }
 
     private fun containsInvalidSkus(skuList: List<String>): Boolean {
@@ -45,3 +45,4 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int)
+

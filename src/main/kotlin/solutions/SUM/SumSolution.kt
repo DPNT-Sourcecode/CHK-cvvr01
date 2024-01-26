@@ -6,19 +6,14 @@ object SumSolution {
         return x + y
     }
 
-    fun validateInputNumbers(x: Int, y: Int) {
-        if (x < 0) {
-            throw IllegalArgumentException("x should be positive")
-        }
-        if (x > 100) {
-            throw IllegalArgumentException("x should be max 100")
-        }
-        if (y < 0) {
-            throw IllegalArgumentException("y should be positive")
-        }
-        if (y > 100) {
-            throw IllegalArgumentException("y should be max 100")
-        }
+    private fun validateInputNumber(value: Int, variableName: String) {
+        require(value in 0..100) { "$variableName should be between 0 and 100 (inclusive)" }
+    }
+
+    private fun validateInputNumbers(x: Int, y: Int) {
+        validateInputNumber(x, "x")
+        validateInputNumber(y, "y")
     }
 }
+
 

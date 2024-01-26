@@ -13,6 +13,7 @@ class CheckoutTest {
     @Test
     fun `non existing items return -1`() {
         assertEquals(-1, CheckoutSolution.checkout("Z"))
+        assertEquals(-1, CheckoutSolution.checkout("AxA"))
     }
 
     @Test
@@ -40,8 +41,13 @@ class CheckoutTest {
     }
 
     @Test
-    fun `lowercase SKUs still return expected price`() {
-        assertEquals(115, CheckoutSolution.checkout("abcd"))
+    fun `lowercase SKUs return -1`() {
+        assertEquals(-1, CheckoutSolution.checkout("abcd"))
+    }
+
+    @Test
+    fun `mixed lower and upper case SKUs return -1`() {
+        assertEquals(-1, CheckoutSolution.checkout("ABCa"))
     }
 
     @Test

@@ -16,7 +16,7 @@ object CheckoutSolution {
         return checkoutItemsMap.entries.sumOf { (sku, quantity) ->
             val item = items.find { it.sku == sku }
             if (item == null) {
-                -1
+                return -1
             } else {
                 val specialOffer = item.specialOffers.find { it.quantity == quantity }
                 if (specialOffer == null) {
@@ -30,7 +30,7 @@ object CheckoutSolution {
 
     private fun getCheckoutItemsMap(skuList: List<String>): Map<Char, Int> {
         return skuList
-            .flatMap { it.uppercase().toList() }
+            .flatMap { it.toList() }
             .groupingBy { it }
             .eachCount()
     }
@@ -52,4 +52,5 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int)
+
 

@@ -75,30 +75,30 @@ class CheckoutTest {
 
     @Test
     fun `free item special offer is being used`() {
-        assertEquals(80, CheckoutSolution.checkout("EEB"))
+        assertEquals(160, CheckoutSolution.checkout("EEB"))
     }
 
     @Test
     fun `free item special offer is not causing an error when no free item in checkout`() {
-        assertEquals(80, CheckoutSolution.checkout("EE"))
+        assertEquals(160, CheckoutSolution.checkout("EE"))
     }
 
     @Test
     fun `multiple free item special offers are being used`() {
-        assertEquals(160, CheckoutSolution.checkout("EEEEBB"))
-        assertEquals(160, CheckoutSolution.checkout("EEBBEE"))
-        assertEquals(160, CheckoutSolution.checkout("BBEEEE"))
-        assertEquals(160, CheckoutSolution.checkout("BEBEEE"))
-        assertEquals(160, CheckoutSolution.checkout("EBEBEE"))
+        assertEquals(320, CheckoutSolution.checkout("EEEEBB"))
+        assertEquals(320, CheckoutSolution.checkout("EEBBEE"))
+        assertEquals(320, CheckoutSolution.checkout("BBEEEE"))
+        assertEquals(320, CheckoutSolution.checkout("BEBEEE"))
+        assertEquals(320, CheckoutSolution.checkout("EBEBEE"))
     }
 
     @Test
     fun `multiple free item special offers are being used for all free items in checkout`() {
-        assertEquals(160, CheckoutSolution.checkout("EEEEB"))
-        assertEquals(160, CheckoutSolution.checkout("EEEBE"))
-        assertEquals(160, CheckoutSolution.checkout("EEBEE"))
-        assertEquals(160, CheckoutSolution.checkout("EBEEE"))
-        assertEquals(160, CheckoutSolution.checkout("BEEEE"))
+        assertEquals(320, CheckoutSolution.checkout("EEEEB"))
+        assertEquals(320, CheckoutSolution.checkout("EEEBE"))
+        assertEquals(320, CheckoutSolution.checkout("EEBEE"))
+        assertEquals(320, CheckoutSolution.checkout("EBEEE"))
+        assertEquals(320, CheckoutSolution.checkout("BEEEE"))
     }
 
     @Test

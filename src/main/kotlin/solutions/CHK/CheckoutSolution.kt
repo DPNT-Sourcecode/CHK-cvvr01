@@ -98,8 +98,3 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int? = null, val freeSku: Char? = null)
-
-
-
-
-

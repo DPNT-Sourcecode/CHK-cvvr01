@@ -25,8 +25,18 @@ object CheckoutSolution {
 
                 for (specialOffer in sortedSpecialOffers) {
                     while (remainingQuantity >= specialOffer.quantity) {
-                        totalCost += specialOffer.price
-                        remainingQuantity -= specialOffer.quantity
+                        if (specialOffer.freeSku != null) {
+                            val freeItem = items.find { it.sku == specialOffer.freeSku }
+                            if (freeItem != null) {
+                                remainingQuantity -= specialOffer.quantity
+                                totalCost += freeItem.price
+                            }
+                        } else if (specialOffer.price != null) {
+                            remainingQuantity -= specialOffer.quantity
+                            totalCost += specialOffer.price
+                        } else {
+                            return -1
+                        }
                     }
                 }
 
@@ -54,11 +64,11 @@ object CheckoutSolution {
             Item('B', 30, listOf(SpecialOffer(2, 45))),
             Item('C', 20),
             Item('D', 15),
-            Item('E', 40, listOf(SpecialOffer(2, 80, 'B'))),
+            Item('E', 40, listOf(SpecialOffer(2, freeSku = 'B'))),
         )
     }
 }
 
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
-data class SpecialOffer(val quantity: Int, val price: Int, val freeSku: Char? = null)
+data class SpecialOffer(val quantity: Int, val price: Int? = null, val freeSku: Char? = null)

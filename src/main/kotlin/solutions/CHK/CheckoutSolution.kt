@@ -113,7 +113,7 @@ object CheckoutSolution {
             Item('T', 20), // buy any 3 of (S,T,X,Y,Z) for 45
             Item('U', 40, listOf(SpecialOffer(4, freeSku = 'U'))),
             Item('V', 50, listOf(SpecialOffer(2, price = 90), SpecialOffer(3, price = 130))),
-            Item('W', 20),
+            Item('W', 20, bundleOffers = listOf(BundleOffer(3, listOf('V')))),
             Item('X', 17), // buy any 3 of (S,T,X,Y,Z) for 45
             Item('Y', 20), // buy any 3 of (S,T,X,Y,Z) for 45
             Item('Z', 21), // buy any 3 of (S,T,X,Y,Z) for 45
@@ -125,11 +125,17 @@ object CheckoutSolution {
 data class Item(
     val sku: Char,
     val price: Int,
-    val specialOffers: List<SpecialOffer> = emptyList()
+    val specialOffers: List<SpecialOffer> = emptyList(),
+    val bundleOffers: List<BundleOffer> = emptyList()
 )
 
 data class SpecialOffer(
     val quantity: Int,
     val price: Int? = null,
     val freeSku: Char? = null
+)
+
+data class BundleOffer(
+    val quantity: Int,
+    val skus: List<Char> = emptyList(),
 )

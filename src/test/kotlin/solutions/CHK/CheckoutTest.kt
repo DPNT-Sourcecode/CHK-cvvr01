@@ -27,6 +27,7 @@ class CheckoutTest {
         assertEquals(30, CheckoutSolution.checkout("B"))
         assertEquals(20, CheckoutSolution.checkout("C"))
         assertEquals(15, CheckoutSolution.checkout("D"))
+        assertEquals(50, CheckoutSolution.checkout("R"))
     }
 
     @Test
@@ -115,11 +116,20 @@ class CheckoutTest {
         assertEquals(40, CheckoutSolution.checkout("FFFFF"))
         assertEquals(40, CheckoutSolution.checkout("FFFFFF"))
         assertEquals(50, CheckoutSolution.checkout("FFFFFFF"))
+        assertEquals(40, CheckoutSolution.checkout("U"))
+        assertEquals(80, CheckoutSolution.checkout("UU"))
+        assertEquals(120, CheckoutSolution.checkout("UUU"))
+        assertEquals(120, CheckoutSolution.checkout("UUU"))
     }
 
     @Test
     fun `buy two get 3 offer mixed with other special offers`() {
         assertEquals(195, CheckoutSolution.checkout("FFFAAABB"))
         assertEquals(260, CheckoutSolution.checkout("FFFAAABBEE"))
+    }
+
+    @Test
+    fun `buy one item each`() {
+        assertEquals(965, CheckoutSolution.checkout("ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
     }
 }

@@ -3,7 +3,7 @@ package solutions.CHK
 object CheckoutSolution {
     fun checkout(skus: String): Int {
         val items = setupItems()
-        val skuList: List<Char> = skus.toList()
+        val skuList = skus.toList()
         if (containsInvalidSkus(skuList)) {
             return -1
         }
@@ -27,7 +27,7 @@ object CheckoutSolution {
         return skuList.map { it.uppercase() }
     }
 
-    private fun containsInvalidSkus(skuList: List<Char>): Boolean {
+    private fun containsInvalidSkus(skuList: List<String>): Boolean {
         skuList.forEach {
             if (!it.matches(Regex("[A-Z]"))) {
                 return true
@@ -49,6 +49,7 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int)
+
 
 
 

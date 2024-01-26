@@ -5,5 +5,3 @@ object HelloSolution {
         return "Hello, $friendName!"
     }
 }
-
-

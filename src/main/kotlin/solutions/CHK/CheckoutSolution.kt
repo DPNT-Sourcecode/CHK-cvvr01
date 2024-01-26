@@ -55,33 +55,27 @@ object CheckoutSolution {
         var totalBundlePrice = 0
 
         while (canFormBundle(checkoutItemsMap, bundleOffer.skus, bundleOffer.quantity)) {
-            val mostExpensiveItems = findMostExpensiveItems(checkoutItemsMap, items, bundleOffer.skus, bundleOffer.quantity)
+            val mostExpensiveItem = findMostExpensiveItem(checkoutItemsMap, items, bundleOffer.skus)
 
-            mostExpensiveItems.forEach { sku ->
-                val currentCount = checkoutItemsMap[sku] ?: 0
-                if (currentCount > 0) {
-                    checkoutItemsMap[sku] = currentCount - 1
-                    if (checkoutItemsMap[sku] == 0) {
-                        checkoutItemsMap.remove(sku)
-                    }
+            mostExpensiveItem?.let { sku ->
+                val quantityToRemove = minOf(checkoutItemsMap[sku]!!, bundleOffer.quantity)
+                checkoutItemsMap[sku] = checkoutItemsMap[sku]!! - quantityToRemove
+
+                if (checkoutItemsMap[sku]!! <= 0) {
+                    checkoutItemsMap.remove(sku)
                 }
-            }
 
-            totalBundlePrice += bundleOffer.price
+                totalBundlePrice += bundleOffer.price
+            }
         }
 
         return totalBundlePrice
     }
 
-    private fun canFormBundle(checkoutItemsMap: Map<Char, Int>, skus: List<Char>, bundleQuantity: Int): Boolean {
-        return checkoutItemsMap.filterKeys { it in skus }.values.sum() >= bundleQuantity
-    }
-
-    private fun findMostExpensiveItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>, bundleSkus: List<Char>, count: Int): List<Char> {
+    private fun findMostExpensiveItem(checkoutItemsMap: Map<Char, Int>, items: List<Item>, bundleSkus: List<Char>): Char? {
         return items.filter { it.sku in bundleSkus && it.sku in checkoutItemsMap.keys }
-            .sortedByDescending { it.price }
-            .take(count)
-            .map { it.sku }
+            .maxByOrNull { it.price }
+            ?.sku
     }
 
     private fun removeFreeItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Map<Char, Int> {
@@ -187,4 +181,5 @@ data class BundleOffer(
     val price: Int,
     val skus: List<Char> = emptyList(),
 )
+
 

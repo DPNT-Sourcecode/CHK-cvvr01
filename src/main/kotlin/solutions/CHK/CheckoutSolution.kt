@@ -109,19 +109,27 @@ object CheckoutSolution {
             Item('P', 50, listOf(SpecialOffer(5, price = 200))),
             Item('Q', 30, listOf(SpecialOffer(3, price = 80))),
             Item('R', 50, listOf(SpecialOffer(3, freeSku = 'Q'))),
-            Item('S', 30),
-            Item('T', 20),
+            Item('S', 20), // buy any 3 of (S,T,X,Y,Z) for 45
+            Item('T', 20), // buy any 3 of (S,T,X,Y,Z) for 45
             Item('U', 40, listOf(SpecialOffer(4, freeSku = 'U'))),
             Item('V', 50, listOf(SpecialOffer(2, price = 90), SpecialOffer(3, price = 130))),
             Item('W', 20),
-            Item('X', 90),
-            Item('Y', 10),
-            Item('Z', 50),
+            Item('X', 17), // buy any 3 of (S,T,X,Y,Z) for 45
+            Item('Y', 20), // buy any 3 of (S,T,X,Y,Z) for 45
+            Item('Z', 21), // buy any 3 of (S,T,X,Y,Z) for 45
 
         )
     }
 }
 
-data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
+data class Item(
+    val sku: Char,
+    val price: Int,
+    val specialOffers: List<SpecialOffer> = emptyList()
+)
 
-data class SpecialOffer(val quantity: Int, val price: Int? = null, val freeSku: Char? = null)
+data class SpecialOffer(
+    val quantity: Int,
+    val price: Int? = null,
+    val freeSku: Char? = null
+)

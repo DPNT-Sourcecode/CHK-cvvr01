@@ -92,6 +92,27 @@ object CheckoutSolution {
             Item('D', 15),
             Item('E', 40, listOf(SpecialOffer(2, freeSku = 'B'))),
             Item('F', 10, listOf(SpecialOffer(3, freeSku = 'F'))),
+            Item('G', 20),
+            Item('H', 10, listOf(SpecialOffer(5, price = 45), SpecialOffer(10, price = 80))),
+            Item('I', 35),
+            Item('J', 60),
+            Item('K', 80, listOf(SpecialOffer(2, price = 150))),
+            Item('L', 90),
+            Item('M', 15),
+            Item('N', 40, listOf(SpecialOffer(3, freeSku = 'M'))),
+            Item('O', 10),
+            Item('P', 50, listOf(SpecialOffer(5, price = 200))),
+            Item('Q', 30, listOf(SpecialOffer(3, price = 80))),
+            Item('R', 30, listOf(SpecialOffer(3, freeSku = 'Q'))),
+            Item('S', 30),
+            Item('T', 20),
+            Item('U', 40, listOf(SpecialOffer(3, freeSku = 'U'))),
+            Item('V', 50, listOf(SpecialOffer(2, price = 90), SpecialOffer(3, price = 130))),
+            Item('W', 20),
+            Item('X', 90),
+            Item('Y', 10),
+            Item('Z', 50),
+
         )
     }
 }

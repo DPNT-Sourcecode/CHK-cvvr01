@@ -12,8 +12,8 @@ class CheckoutTest {
 
     @Test
     fun `non existing items return -1`() {
-        assertEquals(-1, CheckoutSolution.checkout("Z"))
-        assertEquals(-1, CheckoutSolution.checkout("AxA"))
+        assertEquals(-1, CheckoutSolution.checkout("Ö"))
+        assertEquals(-1, CheckoutSolution.checkout("Ä"))
     }
 
     @Test

@@ -2,30 +2,37 @@ package solutions.CHK
 
 object CheckoutSolution {
     fun checkout(skus: String): Int {
-        val items = setupItems()
         val skuList = skus.map { it.toString() }
         if (containsInvalidSkus(skuList)) {
             return -1
         }
-        val upperCaseChars = toUpperCase(skuList)
 
-        val itemQuantities = getItemQuantities(upperCaseChars)
-//
-//        return skuList.sumOf { sku ->
-//            val item = items.find { it.sku == sku[0] }
-//            item?.price ?: return -1
-//        }
-        return 42
+        val checkoutItemsMap = getCheckoutItemsMap(skuList)
+        val items = setupItems()
+        return getSumOfItems(checkoutItemsMap, items)
     }
 
-    private fun getItemQuantities(skuList: List<Char>): Map<Char, Int> {
+    private fun getSumOfItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Int {
+        return checkoutItemsMap.entries.sumOf { (sku, quantity) ->
+            val item = items.find { it.sku == sku }
+            if (item == null) {
+                -1
+            } else {
+                val specialOffer = item.specialOffers.find { it.quantity == quantity }
+                if (specialOffer == null) {
+                    item.price * quantity
+                } else {
+                    specialOffer.price
+                }
+            }
+        }
+    }
+
+    private fun getCheckoutItemsMap(skuList: List<String>): Map<Char, Int> {
         return skuList
+            .flatMap { it.uppercase().toList() }
             .groupingBy { it }
             .eachCount()
-    }
-
-    private fun toUpperCase(skuList: List<String>): List<Char> {
-        return skuList.flatMap { it.uppercase().toList() }
     }
 
     private fun containsInvalidSkus(skuList: List<String>): Boolean {

@@ -18,12 +18,21 @@ object CheckoutSolution {
             if (item == null) {
                 return -1
             } else {
-                val specialOffer = item.specialOffers.find { it.quantity == quantity }
-                if (specialOffer == null) {
-                    item.price * quantity
-                } else {
-                    specialOffer.price
+                val sortedSpecialOffers = item.specialOffers.sortedByDescending { it.quantity }
+
+                var totalCost = 0
+                var remainingQuantity = quantity
+
+                for (specialOffer in sortedSpecialOffers) {
+                    while (remainingQuantity >= specialOffer.quantity) {
+                        totalCost += specialOffer.price
+                        remainingQuantity -= specialOffer.quantity
+                    }
                 }
+
+                totalCost += remainingQuantity * item.price
+
+                totalCost
             }
         }
     }
@@ -52,5 +61,3 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int)
-
-

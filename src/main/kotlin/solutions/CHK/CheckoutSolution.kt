@@ -29,7 +29,8 @@ object CheckoutSolution {
                             val freeItem = items.find { it.sku == specialOffer.freeSku }
                             if (freeItem != null) {
                                 remainingQuantity -= specialOffer.quantity
-                                totalCost += freeItem.price
+                                totalCost += specialOffer.quantity * item.price
+                                totalCost -= freeItem.price
                             }
                         } else if (specialOffer.price != null) {
                             remainingQuantity -= specialOffer.quantity

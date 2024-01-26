@@ -13,10 +13,14 @@ object CheckoutSolution {
     }
 
     private fun getSumOfItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Int {
-        val remainingCheckoutItemsMap = removeFreeItems(checkoutItemsMap, items)
-        return remainingCheckoutItemsMap.entries.sumOf { (sku, quantity) ->
+        val remainingCheckoutItemsMap = removeFreeItems(checkoutItemsMap, items).toMutableMap()
+        val totalBundlePrice = setupBundleOffers().sumOf { applyBundleOffers(remainingCheckoutItemsMap, it) }
+
+        val remainingItemsSum = remainingCheckoutItemsMap.entries.sumOf { (sku, quantity) ->
             calculateItemCost(sku, quantity, items) ?: return -1
         }
+
+        return totalBundlePrice + remainingItemsSum
     }
 
     private fun calculateItemCost(sku: Char, quantity: Int, items: List<Item>): Int? {
@@ -165,6 +169,7 @@ object CheckoutSolution {
         return listOf(
             BundleOffer(
                 3,
+                45,
                 listOf('S', 'T', 'X', 'Y', 'Z')
             ),
         )
@@ -189,4 +194,3 @@ data class BundleOffer(
     val price: Int,
     val skus: List<Char> = emptyList(),
 )
-

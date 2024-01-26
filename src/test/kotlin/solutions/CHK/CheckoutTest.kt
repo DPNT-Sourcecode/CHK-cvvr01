@@ -60,5 +60,10 @@ class CheckoutTest {
         assertEquals(180, CheckoutSolution.checkout("AAAA"))
         assertEquals(230, CheckoutSolution.checkout("AAAAA"))
         assertEquals(260, CheckoutSolution.checkout("AAAAAA"))
+        assertEquals(30, CheckoutSolution.checkout("B"))
+        assertEquals(45, CheckoutSolution.checkout("BB"))
+        assertEquals(75, CheckoutSolution.checkout("BBB"))
+        assertEquals(90, CheckoutSolution.checkout("BBBB"))
+        assertEquals(120, CheckoutSolution.checkout("BBBBB"))
     }
 }

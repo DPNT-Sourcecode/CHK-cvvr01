@@ -14,6 +14,7 @@ object CheckoutSolution {
 
     private fun getSumOfItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Int {
         val remainingCheckoutItemsMap = removeFreeItems(checkoutItemsMap, items)
+        removeBundleItems(checkoutItemsMap, items)
         return remainingCheckoutItemsMap.entries.sumOf { (sku, quantity) ->
             calculateItemCost(sku, quantity, items) ?: return -1
         }
@@ -43,6 +44,18 @@ object CheckoutSolution {
 
         totalCost += remainingQuantity * item.price
         return totalCost
+    }
+
+    private fun removeBundleItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Map<Char, Int> {
+        val updatedCheckoutItemsMap = checkoutItemsMap.toMutableMap()
+
+        checkoutItemsMap.forEach { (sku, quantity) ->
+            items.find { it.sku == sku }?.let { item ->
+                processItemForBundleOffers(updatedCheckoutItemsMap, item, quantity)
+            }
+        }
+
+        return updatedCheckoutItemsMap.filter { it.value > 0 }
     }
 
     private fun removeFreeItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Map<Char, Int> {
@@ -109,14 +122,14 @@ object CheckoutSolution {
             Item('P', 50, listOf(SpecialOffer(5, price = 200))),
             Item('Q', 30, listOf(SpecialOffer(3, price = 80))),
             Item('R', 50, listOf(SpecialOffer(3, freeSku = 'Q'))),
-            Item('S', 20), // buy any 3 of (S,T,X,Y,Z) for 45
-            Item('T', 20), // buy any 3 of (S,T,X,Y,Z) for 45
+            Item('S', 20, bundleOffers = listOf(BundleOffer(3, listOf('S', 'T', 'X', 'Y', 'Z')))),
+            Item('T', 20, bundleOffers = listOf(BundleOffer(3, listOf('S', 'T', 'X', 'Y', 'Z')))),
             Item('U', 40, listOf(SpecialOffer(4, freeSku = 'U'))),
             Item('V', 50, listOf(SpecialOffer(2, price = 90), SpecialOffer(3, price = 130))),
-            Item('W', 20, bundleOffers = listOf(BundleOffer(3, listOf('V')))),
-            Item('X', 17), // buy any 3 of (S,T,X,Y,Z) for 45
-            Item('Y', 20), // buy any 3 of (S,T,X,Y,Z) for 45
-            Item('Z', 21), // buy any 3 of (S,T,X,Y,Z) for 45
+            Item('W', 20),
+            Item('X', 17, bundleOffers = listOf(BundleOffer(3, listOf('S', 'T', 'X', 'Y', 'Z')))),
+            Item('Y', 20, bundleOffers = listOf(BundleOffer(3, listOf('S', 'T', 'X', 'Y', 'Z')))),
+            Item('Z', 21, bundleOffers = listOf(BundleOffer(3, listOf('S', 'T', 'X', 'Y', 'Z')))),
 
         )
     }
@@ -139,3 +152,4 @@ data class BundleOffer(
     val quantity: Int,
     val skus: List<Char> = emptyList(),
 )
+

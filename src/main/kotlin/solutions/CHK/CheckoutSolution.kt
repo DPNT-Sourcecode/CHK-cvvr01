@@ -29,6 +29,8 @@ object CheckoutSolution {
                         if (specialOffer.price != null) {
                             remainingQuantity -= specialOffer.quantity
                             totalCost += specialOffer.price
+                        } else if (specialOffer.freeSku != null) {
+                            break
                         } else {
                             return -1
                         }
@@ -70,7 +72,6 @@ object CheckoutSolution {
         return updatedCheckoutItemsMap.filter { it.value > 0 }
     }
 
-
     private fun getCheckoutItemsMap(skuList: List<String>): Map<Char, Int> {
         return skuList
             .flatMap { it.toList() }
@@ -96,5 +97,6 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int? = null, val freeSku: Char? = null)
+
 
 

@@ -30,7 +30,8 @@ object CheckoutSolution {
                             remainingQuantity -= specialOffer.quantity
                             totalCost += specialOffer.price
                         } else if (specialOffer.freeSku != null) {
-                            break
+                            remainingQuantity -= specialOffer.quantity
+                            totalCost += item.price * specialOffer.quantity
                         } else {
                             return -1
                         }
@@ -97,6 +98,7 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int? = null, val freeSku: Char? = null)
+
 
 
 

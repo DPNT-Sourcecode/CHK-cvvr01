@@ -3,11 +3,13 @@ package solutions.CHK
 object CheckoutSolution {
     fun checkout(skus: String): Int {
         val items = setupItems()
-        var skuList = skus.split("")
+        var skuList = skus.split("") as List<Char>
         if (containsInvalidSkus(skuList)) {
             return -1
         }
         skuList = toUpperCase(skuList)
+
+        val itemQuantities = getItemQuantities(skuList)
 
         return skuList.sumOf { sku ->
             val item = items.find { it.sku == sku[0] }
@@ -15,7 +17,7 @@ object CheckoutSolution {
         }
     }
 
-    private fun getItemQuantities(skuList: List<String>): Map<Char, Int> {
+    private fun getItemQuantities(skuList: List<Char>): Map<Char, Int> {
         val itemQuantities = mutableMapOf<Char, Int>()
 
         return itemQuantities
@@ -47,4 +49,5 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int)
+
 

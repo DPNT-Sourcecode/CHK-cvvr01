@@ -120,5 +120,6 @@ class CheckoutTest {
     @Test
     fun `buy two get 3 offer mixed with other special offers`() {
         assertEquals(195, CheckoutSolution.checkout("FFFAAABB"))
+        assertEquals(260, CheckoutSolution.checkout("FFFAAABBEE"))
     }
 }

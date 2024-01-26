@@ -109,9 +109,9 @@ class CheckoutTest {
 
     @Test
     fun `buy two get 3 offer`() {
-        // assertEquals(10, CheckoutSolution.checkout("F"))
-        // assertEquals(20, CheckoutSolution.checkout("FF"))
-        // assertEquals(20, CheckoutSolution.checkout("FFF"))
+        assertEquals(10, CheckoutSolution.checkout("F"))
+        assertEquals(20, CheckoutSolution.checkout("FF"))
+        assertEquals(20, CheckoutSolution.checkout("FFF"))
         assertEquals(30, CheckoutSolution.checkout("FFFF"))
         assertEquals(40, CheckoutSolution.checkout("FFFFF"))
         assertEquals(40, CheckoutSolution.checkout("FFFFFF"))
@@ -119,7 +119,10 @@ class CheckoutTest {
         assertEquals(40, CheckoutSolution.checkout("U"))
         assertEquals(80, CheckoutSolution.checkout("UU"))
         assertEquals(120, CheckoutSolution.checkout("UUU"))
-        assertEquals(120, CheckoutSolution.checkout("UUU"))
+        assertEquals(70, CheckoutSolution.checkout("K"))
+        assertEquals(120, CheckoutSolution.checkout("KK"))
+        assertEquals(190, CheckoutSolution.checkout("KKK"))
+        assertEquals(240, CheckoutSolution.checkout("KKKK"))
     }
 
     @Test

@@ -152,7 +152,7 @@ object CheckoutSolution {
             Item('H', 10, listOf(SpecialOffer(5, price = 45), SpecialOffer(10, price = 80))),
             Item('I', 35),
             Item('J', 60),
-            Item('K', 70, listOf(SpecialOffer(2, price = 150))),
+            Item('K', 70, listOf(SpecialOffer(2, price = 120))),
             Item('L', 90),
             Item('M', 15),
             Item('N', 40, listOf(SpecialOffer(3, freeSku = 'M'))),
@@ -199,3 +199,4 @@ data class BundleOffer(
     val price: Int,
     val skus: List<Char> = emptyList(),
 )
+

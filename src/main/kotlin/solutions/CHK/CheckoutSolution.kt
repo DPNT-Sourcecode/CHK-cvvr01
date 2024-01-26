@@ -4,32 +4,34 @@ object CheckoutSolution {
     fun checkout(skus: String): Int {
         val items = setupItems()
         var skuList = skus.split("")
-        if (validateSkus(skuList)) {
+        if (containsInvalidSkus(skuList)) {
             return -1
         }
         skuList = toUpperCase(skuList)
 
         return skuList.sumOf { sku ->
             val item = items.find { it.sku == sku[0] }
-            if (item == null) {
-                return -1
-            } else {
-                item.price
-            }
+            item?.price ?: return -1
         }
+    }
+
+    private fun getItemQuantities(skuList: List<String>): Map<Char, Int> {
+        val itemQuantities = mutableMapOf<Char, Int>()
+
+        return itemQuantities
     }
 
     private fun toUpperCase(skuList: List<String>): List<String> {
         return skuList.map { it.uppercase() }
     }
 
-    private fun validateSkus(skuList: List<String>): Boolean {
+    private fun containsInvalidSkus(skuList: List<String>): Boolean {
         skuList.forEach {
             if (!it.matches(Regex("[A-Z]"))) {
-                return false
+                return true
             }
         }
-        return true
+        return false
     }
 
     private fun setupItems(): List<Item> {
@@ -45,3 +47,4 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int)
+

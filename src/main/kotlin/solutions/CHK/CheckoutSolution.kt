@@ -15,62 +15,67 @@ object CheckoutSolution {
     private fun getSumOfItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Int {
         val remainingCheckoutItemsMap = removeFreeItems(checkoutItemsMap, items)
         return remainingCheckoutItemsMap.entries.sumOf { (sku, quantity) ->
-            val item = items.find { it.sku == sku }
-            if (item == null) {
-                return -1
-            } else {
-                val sortedSpecialOffers = item.specialOffers.sortedByDescending { it.quantity }
+            calculateItemCost(sku, quantity, items) ?: return -1
+        }
+    }
 
-                var totalCost = 0
-                var remainingQuantity = quantity
+    private fun calculateItemCost(sku: Char, quantity: Int, items: List<Item>): Int? {
+        val item = items.find { it.sku == sku } ?: return null
+        return calculateCostWithSpecialOffers(item, quantity)
+    }
 
-                for (specialOffer in sortedSpecialOffers) {
-                    while (remainingQuantity >= specialOffer.quantity) {
-                        if (specialOffer.price != null) {
-                            remainingQuantity -= specialOffer.quantity
-                            totalCost += specialOffer.price
-                        } else if (specialOffer.freeSku != null) {
-                            remainingQuantity -= specialOffer.quantity
-                            totalCost += item.price * specialOffer.quantity
-                        } else {
-                            return -1
-                        }
-                    }
-                }
+    private fun calculateCostWithSpecialOffers(item: Item, quantity: Int): Int {
+        val sortedSpecialOffers = item.specialOffers.sortedByDescending { it.quantity }
 
-                totalCost += remainingQuantity * item.price
+        var totalCost = 0
+        var remainingQuantity = quantity
 
-                totalCost
+        for (specialOffer in sortedSpecialOffers) {
+            if (specialOffer.price != null) {
+                val applicableTimes = remainingQuantity / specialOffer.quantity
+                totalCost += applicableTimes * specialOffer.price
+                remainingQuantity -= applicableTimes * specialOffer.quantity
+            } else if (specialOffer.freeSku != null) {
+                remainingQuantity -= specialOffer.quantity
+                totalCost += item.price * specialOffer.quantity
             }
         }
+
+        totalCost += remainingQuantity * item.price
+        return totalCost
     }
 
     private fun removeFreeItems(checkoutItemsMap: Map<Char, Int>, items: List<Item>): Map<Char, Int> {
         val updatedCheckoutItemsMap = checkoutItemsMap.toMutableMap()
 
         checkoutItemsMap.forEach { (sku, quantity) ->
-            val item = items.find { it.sku == sku }
-
-            item?.let {
-                val sortedSpecialOffers = it.specialOffers.sortedByDescending { offer -> offer.quantity }
-
-                for (specialOffer in sortedSpecialOffers) {
-                    var applicableTimes = quantity / specialOffer.quantity
-
-                    while (applicableTimes > 0 && specialOffer.freeSku != null) {
-                        val freeItemQuantity = updatedCheckoutItemsMap[specialOffer.freeSku]
-                        if (freeItemQuantity != null && freeItemQuantity > 0) {
-                            updatedCheckoutItemsMap[specialOffer.freeSku] = freeItemQuantity - 1
-                            applicableTimes--
-                        } else {
-                            break
-                        }
-                    }
-                }
+            items.find { it.sku == sku }?.let { item ->
+                processItemForFreeOffers(updatedCheckoutItemsMap, item, quantity)
             }
         }
 
         return updatedCheckoutItemsMap.filter { it.value > 0 }
+    }
+
+    private fun processItemForFreeOffers(updatedCheckoutItemsMap: MutableMap<Char, Int>, item: Item, quantity: Int) {
+        item.specialOffers.sortedByDescending { it.quantity }
+            .forEach { offer ->
+                applySpecialOffer(updatedCheckoutItemsMap, offer, quantity)
+            }
+    }
+
+    private fun applySpecialOffer(updatedCheckoutItemsMap: MutableMap<Char, Int>, offer: SpecialOffer, quantity: Int) {
+        var applicableTimes = quantity / offer.quantity
+
+        while (applicableTimes > 0 && offer.freeSku != null) {
+            val freeItemQuantity = updatedCheckoutItemsMap[offer.freeSku]
+            if (freeItemQuantity != null && freeItemQuantity > 0) {
+                updatedCheckoutItemsMap[offer.freeSku] = freeItemQuantity - 1
+                applicableTimes--
+            } else {
+                break
+            }
+        }
     }
 
     private fun getCheckoutItemsMap(skuList: List<String>): Map<Char, Int> {
@@ -120,3 +125,4 @@ object CheckoutSolution {
 data class Item(val sku: Char, val price: Int, val specialOffers: List<SpecialOffer> = emptyList())
 
 data class SpecialOffer(val quantity: Int, val price: Int? = null, val freeSku: Char? = null)
+

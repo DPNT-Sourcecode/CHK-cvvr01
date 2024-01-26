@@ -50,11 +50,11 @@ object CheckoutSolution {
 
     private fun setupItems(): List<Item> {
         return listOf(
-            Item('A', 50, listOf(SpecialOffer(3, 130))),
+            Item('A', 50, listOf(SpecialOffer(3, 130), SpecialOffer(5, 200))),
             Item('B', 30, listOf(SpecialOffer(2, 45))),
             Item('C', 20),
             Item('D', 15),
-            Item('E', 40, listOf(SpecialOffer(2, 80))
+            Item('E', 40, listOf(SpecialOffer(2, 80, 'B'))),
         )
     }
 }

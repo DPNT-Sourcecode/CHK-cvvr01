@@ -58,12 +58,18 @@ class CheckoutTest {
     @Test
     fun `multiple special offer price items still return expected price`() {
         assertEquals(180, CheckoutSolution.checkout("AAAA"))
-        assertEquals(230, CheckoutSolution.checkout("AAAAA"))
-        assertEquals(260, CheckoutSolution.checkout("AAAAAA"))
+        assertEquals(200, CheckoutSolution.checkout("AAAAA"))
+        assertEquals(250, CheckoutSolution.checkout("AAAAAA"))
         assertEquals(30, CheckoutSolution.checkout("B"))
         assertEquals(45, CheckoutSolution.checkout("BB"))
         assertEquals(75, CheckoutSolution.checkout("BBB"))
         assertEquals(90, CheckoutSolution.checkout("BBBB"))
         assertEquals(120, CheckoutSolution.checkout("BBBBB"))
+    }
+
+    @Test
+    fun `two special offers are being used`() {
+        // 5 times offer and 3 times offer
+        assertEquals(330, CheckoutSolution.checkout("AAAAAAAA"))
     }
 }

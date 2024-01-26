@@ -15,5 +15,3 @@ object SumSolution {
         validateInputNumber(y, "y")
     }
 }
-
-

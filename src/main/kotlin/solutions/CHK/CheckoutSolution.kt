@@ -65,6 +65,9 @@ object CheckoutSolution {
                         }
                     }
                 }
+                if (remainingQuantity <= 0) {
+                    return emptyMap()
+                }
 
                 remainingQuantity
             }
